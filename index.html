@@ -250,6 +250,7 @@ function renderAll(){
   c+=`<div>📞 <strong>客服</strong>${DATA.meta.subtitle||''}</div>`;
   if(DATA.meta.email)c+=`<div>📧 <strong>信箱</strong>${DATA.meta.email}</div>`;
   if(DATA.meta.lineId)c+=`<div>💬 <strong>LINE</strong>${DATA.meta.lineId}</div>`;
+  if(DATA.meta.customFields&&DATA.meta.customFields.length){DATA.meta.customFields.forEach(f=>{if(f.label&&f.value)c+=`<div>📌 <strong>${esc(f.label)}</strong>${esc(f.value)}</div>`})}
   document.getElementById('headerContact').innerHTML=c;
   document.getElementById('marqueeText').textContent=DATA.marquee||'';
   renderCategories();renderQA();
@@ -565,16 +566,51 @@ function saveNewQA(){
 
 // ---- 基本設定 ----
 function renderMetaAdmin(){
+  if(!DATA.meta.customFields)DATA.meta.customFields=[];
+  setTimeout(renderMetaList,0);
   return`<h3 style="margin-bottom:16px">⚙️ 基本設定</h3>
+    <div style="padding:14px;background:#FFF8E1;border:1px solid #F5D98E;border-radius:10px;margin-bottom:16px;font-size:.85rem;color:#8B4513">💡 上方為系統欄位（標題/電話/信箱等），下方「自訂欄位」可自由新增任何資訊（窗口、群組、注意事項等）</div>
+    <div style="background:#f9f9f9;border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:20px">
+    <h4 style="margin-bottom:12px;color:var(--brand)">📌 系統欄位</h4>
     <div class="form-group"><label>網站標題</label><input type="text" id="m_title" value="${esc(DATA.meta.title||'')}"></div>
-    <div class="form-group"><label>客服電話</label><input type="text" id="m_sub" value="${esc(DATA.meta.subtitle||'')}"></div>
+    <div class="form-group"><label>客服電話（顯示在 Header）</label><input type="text" id="m_sub" value="${esc(DATA.meta.subtitle||'')}"></div>
     <div class="form-group"><label>客服信箱</label><input type="text" id="m_email" value="${esc(DATA.meta.email||'')}"></div>
     <div class="form-group"><label>LINE ID</label><input type="text" id="m_line" value="${esc(DATA.meta.lineId||'')}"></div>
     <div class="form-group"><label>跑馬燈</label><textarea id="m_marquee" rows="3">${esc(DATA.marquee||'')}</textarea></div>
     <div class="form-group"><label>版本</label><input type="text" id="m_ver" value="${esc(DATA.meta.version||'')}"></div>
-    <div style="margin-top:20px"><button class="btn-primary" onclick="saveMeta()">💾 儲存</button></div>`;
+    <div style="margin-top:12px"><button class="btn-primary" onclick="saveMetaSystem()">💾 儲存系統欄位</button></div>
+    </div>
+    <div style="background:#f0f7ff;border:1px solid #90CAF9;border-radius:10px;padding:16px">
+    <h4 style="margin-bottom:12px;color:#1565C0">📝 自訂欄位 <span style="font-weight:400;font-size:.8rem;color:var(--text-light)">（可自由新增修改刪除）</span></h4>
+    <div class="admin-toolbar"><button class="btn-primary" style="background:#1565C0" onclick="editMetaField(null)">➕ 新增欄位</button></div>
+    <div class="admin-list" id="metaFieldList"></div>
+    </div>`;
 }
-function saveMeta(){
+function renderMetaList(){
+  const list=DATA.meta.customFields||[];
+  document.getElementById('metaFieldList').innerHTML=list.length?list.map((f,i)=>`<div class="admin-item"><div class="admin-item-info"><div class="admin-item-title">${esc(f.label)}</div><div class="admin-item-meta" style="white-space:pre-wrap;max-height:60px;overflow:hidden">${esc(f.value)}</div></div><button class="admin-btn admin-btn-edit" onclick="moveMetaField(${i},-1)" title="上移">⬆</button><button class="admin-btn admin-btn-edit" onclick="moveMetaField(${i},1)" title="下移">⬇</button><button class="admin-btn admin-btn-edit" onclick="editMetaField(${i})">編輯</button><button class="admin-btn admin-btn-del" onclick="delMetaField(${i})">刪除</button></div>`).join(''):'<div style="padding:20px;text-align:center;color:var(--text-light)">尚無自訂欄位，點上方「➕ 新增欄位」來新增</div>';
+}
+function moveMetaField(i,dir){const list=DATA.meta.customFields;const j=i+dir;if(j<0||j>=list.length)return;[list[i],list[j]]=[list[j],list[i]];saveLocal();renderMetaList()}
+function editMetaField(idx){
+  const f=idx!==null?DATA.meta.customFields[idx]:{label:'',value:''};
+  document.getElementById('adminTabContent').innerHTML=`
+    <button class="btn-secondary" onclick="showAdminTab('meta',document.querySelector('.admin-tab.active'))">← 返回</button>
+    <h3 style="margin:16px 0">${idx!==null?'✏️ 編輯欄位':'➕ 新增欄位'}</h3>
+    <div class="form-group"><label>欄位名稱</label><input type="text" id="mf_label" value="${esc(f.label)}" placeholder="例：業主窗口、LINE群組、注意事項..."></div>
+    <div class="form-group"><label>內容</label><textarea id="mf_value" rows="5" placeholder="輸入內容...">${esc(f.value)}</textarea></div>
+    <div style="margin-top:20px"><button class="btn-secondary" onclick="showAdminTab('meta',document.querySelector('.admin-tab.active'))">取消</button><button class="btn-primary" onclick="saveMetaField(${idx!==null?idx:'null'})">💾 儲存</button></div>`;
+}
+function saveMetaField(idx){
+  const label=document.getElementById('mf_label').value.trim();
+  const value=document.getElementById('mf_value').value.trim();
+  if(!label){showToast('欄位名稱不可空白');return}
+  if(!DATA.meta.customFields)DATA.meta.customFields=[];
+  if(idx!==null){DATA.meta.customFields[idx]={label,value}}
+  else{DATA.meta.customFields.push({label,value})}
+  saveLocal();showToast('已儲存');showAdminTab('meta',document.querySelector('.admin-tab.active'));
+}
+function delMetaField(idx){const f=DATA.meta.customFields[idx];if(!f||!confirm(`刪除「${f.label}」？`))return;DATA.meta.customFields.splice(idx,1);saveLocal();showToast('已刪除');renderMetaList()}
+function saveMetaSystem(){
   DATA.meta.title=document.getElementById('m_title').value.trim();
   DATA.meta.subtitle=document.getElementById('m_sub').value.trim();
   DATA.meta.email=document.getElementById('m_email').value.trim();
