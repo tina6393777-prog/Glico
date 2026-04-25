@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>格力高 Glico 客服助手</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--brand:#E4002B;--brand-dark:#B80023;--brand-light:#FF6B6B;--brand-bg:#FFF5F5;--success:#2D9F60;--text:#2C2C2C;--text-light:#6B6B6B;--border:#E8E0E0;--bg:#FAF7F5;--white:#FFF;--shadow:0 2px 8px rgba(228,0,43,.08);--shadow-hover:0 6px 20px rgba(228,0,43,.15);--radius:12px;--fs:16px}
+html{font-size:var(--fs)}
+body{font-family:-apple-system,BlinkMacSystemFont,"Microsoft JhengHei","PingFang TC","Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;padding-bottom:40px}
+body.fs-large{--fs:18px}body.fs-xlarge{--fs:20px}
+
+.header{background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:#fff;padding:16px;box-shadow:0 4px 12px rgba(228,0,43,.2);position:sticky;top:0;z-index:100}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo-box{background:#fff;border-radius:12px;padding:8px 14px;display:flex;align-items:center;box-shadow:0 2px 6px rgba(0,0,0,.1);flex-shrink:0}
+.logo-text{font-size:1.8rem;font-weight:900;color:var(--brand);letter-spacing:2px;font-style:italic}
+.logo-sub{font-size:.65rem;color:var(--text-light);text-align:center;margin-top:-2px}
+.header-center{flex:1;min-width:180px}
+.header h1{font-size:1.25rem;margin-bottom:4px;letter-spacing:1px;font-weight:700}
+.header-contact{font-size:.8rem;opacity:.95;line-height:1.7}
+.header-contact strong{color:#FFE082;margin-right:4px}
+.header-actions{display:flex;gap:6px;flex-shrink:0}
+.btn-icon{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:6px 12px;border-radius:20px;font-size:.8rem;cursor:pointer;transition:.2s;white-space:nowrap;font-family:inherit}
+.btn-icon:hover{background:rgba(255,255,255,.28)}
+@media(max-width:640px){.header-inner{gap:10px}.header h1{font-size:1.05rem}.header-contact{font-size:.72rem}.btn-icon{padding:5px 10px;font-size:.75rem}}
+
+.marquee-wrap{background:#FFF8E1;border-bottom:1px solid #F5D98E;overflow:hidden;padding:8px 0}
+.marquee{display:inline-block;white-space:nowrap;animation:marquee 40s linear infinite;font-size:.85rem;color:#8B4513}
+@keyframes marquee{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+
+.container{max-width:1200px;margin:0 auto;padding:16px}
+
+.update-banner{background:#E8F5E9;border:1px solid #81C784;border-radius:10px;padding:12px 16px;margin-bottom:14px;display:none;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.9rem;color:#1B5E20}
+.update-banner.show{display:flex}
+.update-banner button{background:#2E7D32;color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.85rem;font-family:inherit}
+
+.search-box{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:12px 16px;display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.search-box input{flex:1;border:none;outline:none;font-size:1rem;color:var(--text);background:transparent;padding:4px 0;font-family:inherit}
+.search-icon{color:var(--brand);font-size:1.2rem}
+.search-clear{background:var(--border);border:none;border-radius:50%;width:24px;height:24px;font-size:.8rem;cursor:pointer;color:var(--text-light);display:none}
+.search-clear.show{display:block}
+
+.main-layout{display:flex;gap:16px;align-items:flex-start}
+.sidebar{width:220px;flex-shrink:0;position:sticky;top:120px;max-height:calc(100vh - 140px);overflow-y:auto;background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:0;border:1px solid var(--border)}
+.sidebar-header{background:var(--brand);color:#fff;padding:12px 16px;font-weight:700;font-size:.95rem;border-radius:var(--radius) var(--radius) 0 0;text-align:center}
+.categories{padding:8px}
+.category-card{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:8px;cursor:pointer;transition:.15s;font-size:.9rem;color:var(--text);border:1px solid transparent}
+.category-card:hover{background:var(--brand-bg);color:var(--brand)}
+.category-card.active{background:var(--brand);color:#fff;font-weight:600;border-color:var(--brand)}
+.cat-icon{font-size:1.1rem}
+.cat-name{flex:1}
+.cat-count{font-size:.75rem;opacity:.7}
+
+@media(max-width:900px){
+  .main-layout{flex-direction:column}
+  .sidebar{width:100%;position:static;max-height:none;overflow:visible}
+  .sidebar.collapsed .categories{display:none}
+  .sidebar.collapsed .sidebar-header::after{content:' ▼';font-size:.8rem}
+  .sidebar-header{cursor:pointer}
+  .sidebar-toggle{display:none}
+}
+@media(min-width:901px){.sidebar-toggle{display:none}}
+
+.section-title{font-size:1.1rem;font-weight:700;color:var(--brand);margin:16px 0 12px;padding-left:12px;border-left:4px solid var(--brand);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.section-title .count-badge{font-size:.8rem;color:var(--text-light);font-weight:500}
+
+.qa-list{display:flex;flex-direction:column;gap:12px}
+.qa-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;border:1px solid var(--border);transition:.2s;position:relative}
+.qa-card:hover{box-shadow:var(--shadow-hover)}
+.qa-header{padding:14px 16px;cursor:pointer;display:flex;align-items:flex-start;gap:10px;user-select:none}
+.qa-header:hover{background:var(--brand-bg)}
+.qa-title{flex:1;font-weight:600;color:var(--text);font-size:1rem;line-height:1.5}
+.qa-arrow{color:var(--brand);font-size:1rem;transition:transform .2s;flex-shrink:0;margin-top:2px}
+.qa-card.open .qa-arrow{transform:rotate(180deg)}
+.qa-content{max-height:0;overflow:hidden;transition:max-height .3s ease-out;background:var(--brand-bg)}
+.qa-card.open .qa-content{max-height:10000px}
+.qa-body{padding:16px;font-size:.95rem;white-space:pre-wrap;word-break:break-word;line-height:1.8;color:var(--text);border-top:1px solid var(--border)}
+.qa-body img{max-width:100%;height:auto;border-radius:8px;margin:8px 0;display:block}
+.qa-body a{color:var(--brand);text-decoration:underline;word-break:break-all}
+.video-wrap{position:relative;padding-bottom:56.25%;height:0;margin:10px 0;border-radius:8px;overflow:hidden;background:#000}
+.video-wrap iframe,.video-wrap video{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.qa-tags{padding:0 16px 12px;display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:.75rem;padding:3px 10px;background:var(--border);color:var(--text-light);border-radius:12px}
+.badge{font-size:.7rem;padding:2px 8px;border-radius:10px;font-weight:600;display:inline-block;margin-left:6px;vertical-align:middle}
+.badge-urgent{background:#FFE5E5;color:#C8102E;border:1px solid #C8102E}
+.badge-internal{background:#FFF3CD;color:#856404;border:1px solid #F0C040}
+
+.ct-red{color:#E4002B;font-weight:600}.ct-orange{color:#E67E22;font-weight:600}.ct-green{color:#27AE60;font-weight:600}.ct-blue{color:#2980B9;font-weight:600}.ct-purple{color:#8E44AD;font-weight:600}
+
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-light)}.empty-state .big{font-size:3rem;margin-bottom:10px}
+
+/* Admin buttons on cards */
+.qa-admin-btns{display:none;position:absolute;top:8px;right:8px;gap:4px;z-index:5}
+body.admin-mode .qa-admin-btns{display:flex}
+.qa-admin-btns button{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:.75rem;cursor:pointer;transition:.15s}
+.qa-admin-btns button:hover{background:var(--brand-bg);border-color:var(--brand)}
+.cat-manage-btn{display:none;background:var(--brand-bg);color:var(--brand);border:1px solid var(--brand);border-radius:6px;padding:2px 10px;font-size:.75rem;cursor:pointer}
+body.admin-mode .cat-manage-btn{display:inline-block}
+
+/* Inline Edit Panel */
+.qa-edit-panel{display:none;padding:16px;background:#fff;border-top:2px solid var(--brand)}
+.qa-edit-panel.show{display:block}
+.edit-field{margin-bottom:12px}
+.edit-field label{display:block;font-size:.85rem;font-weight:600;margin-bottom:4px;color:var(--text)}
+.edit-field input,.edit-field select,.edit-field textarea{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit;transition:.2s}
+.edit-field input:focus,.edit-field select:focus,.edit-field textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(228,0,43,.1)}
+.edit-toolbar{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
+.tool-btn{padding:3px 8px;border:1px solid var(--border);border-radius:6px;font-size:.75rem;cursor:pointer;background:#fff;font-family:inherit}
+.tool-btn:hover{background:var(--brand-bg)}
+.tool-sep{width:1px;background:var(--border);margin:0 4px}
+.edit-textarea{min-height:200px;resize:vertical;line-height:1.8}
+.edit-check{display:flex;gap:16px;margin:8px 0}
+.edit-check label{display:flex;align-items:center;gap:4px;font-size:.85rem;cursor:pointer}
+.edit-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.edit-save{background:var(--brand);color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:.9rem;cursor:pointer;font-family:inherit}
+.edit-cancel{background:var(--border);color:var(--text);border:none;padding:8px 16px;border-radius:8px;font-size:.9rem;cursor:pointer;font-family:inherit}
+.edit-delete{background:#fff;color:#C62828;border:1px solid #C62828;padding:8px 16px;border-radius:8px;font-size:.9rem;cursor:pointer;margin-left:auto;font-family:inherit}
+
+/* Modal */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:16px}
+.modal.show{display:flex}
+.modal-content{background:var(--white);border-radius:16px;width:100%;max-width:700px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--white);z-index:1;border-radius:16px 16px 0 0}
+.modal-header h2{font-size:1.1rem;color:var(--text)}
+.modal-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--text-light);padding:4px 8px}
+.modal-body{padding:20px}
+
+/* Admin Tabs */
+.admin-tabs{display:flex;gap:4px;margin-bottom:20px;flex-wrap:wrap;border-bottom:2px solid var(--border);padding-bottom:8px}
+.admin-tab{padding:8px 16px;border:none;background:none;font-size:.85rem;cursor:pointer;border-radius:8px 8px 0 0;color:var(--text-light);font-family:inherit;font-weight:500;transition:.15s}
+.admin-tab:hover{background:var(--brand-bg);color:var(--brand)}
+.admin-tab.active{background:var(--brand);color:#fff}
+
+/* Admin Forms */
+.login-form{text-align:center;padding:40px 20px}
+.login-form input{width:100%;max-width:300px;padding:12px 16px;border:2px solid var(--border);border-radius:10px;font-size:1rem;text-align:center;font-family:inherit;margin-bottom:4px}
+.login-form input:focus{outline:none;border-color:var(--brand)}
+.btn-primary{background:var(--brand);color:#fff;border:none;padding:10px 24px;border-radius:10px;font-size:.95rem;cursor:pointer;font-family:inherit;font-weight:600;transition:.2s}
+.btn-primary:hover{background:var(--brand-dark)}
+.btn-secondary{background:var(--border);color:var(--text);border:none;padding:8px 16px;border-radius:8px;font-size:.85rem;cursor:pointer;font-family:inherit;margin-right:8px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:.85rem;font-weight:600;margin-bottom:6px;color:var(--text)}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(228,0,43,.1)}
+
+/* Admin list */
+.admin-list{display:flex;flex-direction:column;gap:8px}
+.admin-item{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--border)}
+.admin-item-info{flex:1;min-width:0}
+.admin-item-title{font-weight:600;font-size:.9rem}
+.admin-item-meta{font-size:.8rem;color:var(--text-light)}
+.admin-btn{padding:4px 10px;border-radius:6px;font-size:.75rem;cursor:pointer;border:1px solid var(--border);background:#fff;font-family:inherit}
+.admin-btn-edit{color:var(--brand)}
+.admin-btn-del{color:#C62828;border-color:#EF9A9A}
+.admin-toolbar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+
+/* Export section */
+.export-section{padding:20px;margin-bottom:16px;background:var(--brand-bg);border:1px solid var(--border);border-radius:12px}
+.export-section h3{margin-bottom:8px;color:var(--brand)}
+.export-section p{font-size:.85rem;color:var(--text-light);margin-bottom:12px}
+
+/* Toast */
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--text);color:#fff;padding:12px 24px;border-radius:12px;font-size:.9rem;z-index:300;transition:.3s;opacity:0;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* Scroll top */
+.scroll-top{position:fixed;bottom:20px;right:20px;width:44px;height:44px;background:var(--brand);color:#fff;border:none;border-radius:50%;font-size:1.2rem;cursor:pointer;box-shadow:0 4px 12px rgba(228,0,43,.3);display:none;z-index:90;font-family:inherit}
+.scroll-top.show{display:block}
+</style>
+</head>
+<body>
+
+<div class="header">
+<div class="header-inner">
+<div class="logo-box">
+<div>
+<div class="logo-text">Glico</div>
+<div class="logo-sub">格力高</div>
+</div>
+</div>
+<div class="header-center">
+<h1 id="headerTitle">格力高 Glico 客服助手</h1>
+<div class="header-contact" id="headerContact"></div>
+</div>
+<div class="header-actions">
+<button class="btn-icon" onclick="checkUpdate()" title="檢查更新">🔄</button>
+<button class="btn-icon" onclick="toggleFontSize()" title="字級">🔤</button>
+<button class="btn-icon" onclick="openAdmin()" title="管理">⚙️</button>
+</div>
+</div>
+</div>
+
+<div class="marquee-wrap"><div class="marquee" id="marqueeText"></div></div>
+
+<div class="container">
+<div class="update-banner" id="updateBanner"><span>🆕 偵測到新版本！</span><button onclick="applyUpdate()">立即更新</button></div>
+<div class="main-layout">
+  <aside class="sidebar" id="sidebarPanel">
+    <div class="sidebar-header">📂 分類選單</div>
+    <div class="categories" id="categoryContainer"></div>
+  </aside>
+  <main class="content-area">
+    <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="searchInput" placeholder="搜尋關鍵字（標題、內容、標籤）..."><button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button></div>
+    <div id="resultContainer"></div>
+  </main>
+</div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="scrollToTop()">↑</button>
+
+<div class="modal" id="adminModal">
+<div class="modal-content">
+<div class="modal-header"><h2 id="adminTitle">⚙️ 管理後台</h2><button class="modal-close" onclick="closeAdmin()">✕</button></div>
+<div class="modal-body" id="adminBody"></div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let DATA=null,currentCategory='all',isAdmin=false;
+const ADMIN_PASSWORD='1234';
+const ICONS=['🏢','🎂','💳','🎁','🏪','🌐','💰','📍','📢','🛍️','🎯','⭐','🔥','💎','🎊','🎉','📝','📋','📊','📈','📌','📞','📱','💬','🚨','⚠️','🔒','🔑','✅','❌','❓','❗','🚀','✨','💡','🎓','📚','📖','🔧','⚙️','🍫','🍪','🍵','🚚','🏃','🎈','🎀','💝','🛒','🏆','🌟','🤝','🔄','👤','📷'];
+
+window.addEventListener('DOMContentLoaded',init);
+
+async function init(){
+  try{
+    const local=localStorage.getItem('glico_qa_data');
+    if(local){try{DATA=JSON.parse(local)}catch(e){DATA=await loadJson()}}
+    else DATA=await loadJson();
+    renderAll();silentCheck();
+  }catch(e){
+    document.getElementById('resultContainer').innerHTML='<div class="empty-state"><div class="big">⚠️</div><p>無法載入資料，請確認 data.json</p><p style="font-size:.85rem;margin-top:8px">'+e.message+'</p></div>';
+  }
+  document.getElementById('searchInput').addEventListener('input',onSearch);
+  window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',scrollY>300)});
+  document.querySelector('.sidebar-header')?.addEventListener('click',()=>{
+    if(window.innerWidth<=900)document.getElementById('sidebarPanel')?.classList.toggle('collapsed');
+  });
+}
+
+async function loadJson(){const r=await fetch('data.json?t='+Date.now());if(!r.ok)throw new Error('載入失敗');return r.json()}
+
+async function silentCheck(){try{const s=await loadJson();const localBuild=DATA.meta.buildNum||0;const serverBuild=s.meta.buildNum||0;if(serverBuild>localBuild&&localStorage.getItem('glico_qa_data')){window._pu=s;document.getElementById('updateBanner').classList.add('show')}}catch(e){}}
+async function checkUpdate(){showToast('檢查中...');try{const s=await loadJson();if(!localStorage.getItem('glico_qa_data')){DATA=s;renderAll();showToast('已是最新');return}const localBuild=DATA.meta.buildNum||0;const serverBuild=s.meta.buildNum||0;if(serverBuild>localBuild){window._pu=s;document.getElementById('updateBanner').classList.add('show');showToast('發現新版本（v'+serverBuild+'）！')}else showToast('已是最新（v'+localBuild+'）')}catch(e){showToast('檢查失敗')}}
+function applyUpdate(){if(!window._pu)return;DATA=window._pu;window._pu=null;localStorage.removeItem('glico_qa_data');document.getElementById('updateBanner').classList.remove('show');renderAll();showToast('已更新至 v'+(DATA.meta.buildNum||0))}
+
+function renderAll(){
+  document.getElementById('headerTitle').textContent=DATA.meta.title||'格力高 Glico 客服助手';
+  let c='';
+  c+=`<div>📞 <strong>客服</strong>${DATA.meta.subtitle||''}</div>`;
+  if(DATA.meta.email)c+=`<div>📧 <strong>信箱</strong>${DATA.meta.email}</div>`;
+  if(DATA.meta.lineId)c+=`<div>💬 <strong>LINE</strong>${DATA.meta.lineId}</div>`;
+  document.getElementById('headerContact').innerHTML=c;
+  document.getElementById('marqueeText').textContent=DATA.marquee||'';
+  renderCategories();renderQA();
+}
+
+function renderCategories(){
+  const box=document.getElementById('categoryContainer');
+  let h=`<div class="category-card ${currentCategory==='all'?'active':''}" onclick="setCategory('all')"><span class="cat-icon">📋</span><span class="cat-name">全部 QA</span><span class="cat-count">${DATA.qa.length}</span></div>`;
+  DATA.categories.forEach(c=>{
+    const n=DATA.qa.filter(q=>q.category===c.id).length;
+    h+=`<div class="category-card ${currentCategory===c.id?'active':''}" onclick="setCategory('${c.id}')"><span class="cat-icon">${c.icon}</span><span class="cat-name">${esc(c.name)}</span><span class="cat-count">${n}</span></div>`;
+  });
+  box.innerHTML=h;
+}
+function setCategory(id){currentCategory=id;renderCategories();renderQA();if(window.innerWidth<=900)document.getElementById('sidebarPanel')?.classList.add('collapsed')}
+
+function renderQA(){
+  const ct=document.getElementById('resultContainer');
+  const kw=(document.getElementById('searchInput').value||'').trim().toLowerCase();
+  let list=DATA.qa;
+  if(currentCategory!=='all')list=list.filter(q=>q.category===currentCategory);
+  if(kw)list=list.filter(q=>q.title.toLowerCase().includes(kw)||q.content.toLowerCase().includes(kw)||(q.tags||[]).some(t=>t.toLowerCase().includes(kw)));
+  if(!list.length){ct.innerHTML='<div class="empty-state"><div class="big">🔍</div><p>找不到符合的 QA</p></div>';return}
+  let h='';
+  const title=currentCategory==='all'?'全部 QA':DATA.categories.find(c=>c.id===currentCategory)?.name||'';
+  h+=`<div class="section-title">${title}<span class="count-badge">${list.length} 則</span><button class="cat-manage-btn" onclick="openAdmin();setTimeout(()=>showAdminTab('category'),100)">📂 管理分類</button></div>`;
+  h+='<div class="qa-list">';
+  list.forEach(q=>h+=renderCard(q,kw));
+  h+='</div>';
+  ct.innerHTML=h;
+}
+
+function renderCard(q,kw){
+  const cat=DATA.categories.find(c=>c.id===q.category);
+  let badges='';
+  if(q.urgent)badges+='<span class="badge badge-urgent">🚨 緊急</span>';
+  if(q.internal)badges+='<span class="badge badge-internal">🔒 內部</span>';
+  const content=fmt(q.content);
+  const titleHl=kw?hl(q.title,kw):esc(q.title);
+  let tags='';
+  if(q.tags&&q.tags.length)tags='<div class="qa-tags">'+q.tags.map(t=>`<span class="tag">#${esc(t)}</span>`).join('')+'</div>';
+  return `<div class="qa-card" data-id="${q.id}">
+    <div class="qa-admin-btns">
+      <button onclick="event.stopPropagation();moveQA(${q.id},-1)" title="上移">⬆</button>
+      <button onclick="event.stopPropagation();moveQA(${q.id},1)" title="下移">⬇</button>
+      <button onclick="event.stopPropagation();inlineEdit(${q.id})" title="編輯">✏️</button>
+    </div>
+    <div class="qa-header" onclick="toggleQA(${q.id})">
+      <div class="qa-title">${cat?cat.icon:''} ${titleHl}${badges}</div>
+      <span class="qa-arrow">▼</span>
+    </div>
+    <div class="qa-content">
+      <div class="qa-body">${content}</div>
+      ${tags}
+      <div class="qa-edit-panel" id="editPanel${q.id}"></div>
+    </div>
+  </div>`;
+}
+
+function toggleQA(id){document.querySelector(`.qa-card[data-id="${id}"]`)?.classList.toggle('open')}
+
+function moveQA(id,dir){
+  const idx=DATA.qa.findIndex(q=>q.id===id);if(idx<0)return;
+  if(currentCategory!=='all'){
+    const sameCat=DATA.qa.filter(q=>q.category===currentCategory);
+    const catIdx=sameCat.findIndex(q=>q.id===id);
+    const targetCatIdx=catIdx+dir;
+    if(targetCatIdx<0||targetCatIdx>=sameCat.length)return;
+    const targetId=sameCat[targetCatIdx].id;
+    const globalIdx=DATA.qa.findIndex(q=>q.id===id);
+    const globalTargetIdx=DATA.qa.findIndex(q=>q.id===targetId);
+    [DATA.qa[globalIdx],DATA.qa[globalTargetIdx]]=[DATA.qa[globalTargetIdx],DATA.qa[globalIdx]];
+  } else {
+    const j=idx+dir;if(j<0||j>=DATA.qa.length)return;
+    [DATA.qa[idx],DATA.qa[j]]=[DATA.qa[j],DATA.qa[idx]];
+  }
+  saveLocal();renderQA();
+}
+
+// ========= 前台直接編輯 =========
+function inlineEdit(id){
+  const q=DATA.qa.find(x=>x.id===id);if(!q)return;
+  const card=document.querySelector(`.qa-card[data-id="${id}"]`);
+  if(!card.classList.contains('open'))card.classList.add('open');
+  const panel=document.getElementById('editPanel'+id);
+  if(panel.classList.contains('show')){panel.classList.remove('show');panel.innerHTML='';return}
+  const catOptions=DATA.categories.map(c=>`<option value="${c.id}" ${c.id===q.category?'selected':''}>${c.icon} ${esc(c.name)}</option>`).join('');
+  panel.innerHTML=`
+    <div class="edit-field"><label>分類</label><select id="ie_cat_${id}">${catOptions}</select></div>
+    <div class="edit-field"><label>標題</label><input type="text" id="ie_title_${id}" value="${esc(q.title)}"></div>
+    <div class="edit-field">
+      <label>內容 <small style="color:var(--text-light);font-weight:400">（選取文字後點顏色按鈕套用）</small></label>
+      <div class="edit-toolbar">
+        <button type="button" class="tool-btn" onclick="wrapSel('ie_content_${id}','red')">🔴 紅</button>
+        <button type="button" class="tool-btn" onclick="wrapSel('ie_content_${id}','orange')">🟠 橘</button>
+        <button type="button" class="tool-btn" onclick="wrapSel('ie_content_${id}','green')">🟢 綠</button>
+        <button type="button" class="tool-btn" onclick="wrapSel('ie_content_${id}','blue')">🔵 藍</button>
+        <button type="button" class="tool-btn" onclick="wrapSel('ie_content_${id}','purple')">🟣 紫</button>
+        <div class="tool-sep"></div>
+        <button type="button" class="tool-btn" onclick="doInsertImg('ie_content_${id}')">📷 圖片</button>
+        <button type="button" class="tool-btn" onclick="doInsertVideo('ie_content_${id}')">🎥 影片</button>
+        <button type="button" class="tool-btn" onclick="doInsertLink('ie_content_${id}')">🔗 連結</button>
+        <input type="file" id="ie_imgfile_${id}" accept="image/*" style="display:none" onchange="doImgFile(this,'ie_content_${id}')">
+      </div>
+      <textarea class="edit-textarea" id="ie_content_${id}">${esc(q.content)}</textarea>
+    </div>
+    <div class="edit-field"><label>標籤（逗號分隔）</label><input type="text" id="ie_tags_${id}" value="${esc((q.tags||[]).join(', '))}"></div>
+    <div class="edit-check">
+      <label><input type="checkbox" id="ie_urgent_${id}" ${q.urgent?'checked':''}> 🚨 緊急</label>
+      <label><input type="checkbox" id="ie_internal_${id}" ${q.internal?'checked':''}> 🔒 內部</label>
+    </div>
+    <div class="edit-actions">
+      <button class="edit-save" onclick="inlineSave(${id})">💾 儲存</button>
+      <button class="edit-cancel" onclick="inlineCancel(${id})">取消</button>
+      <button class="edit-delete" onclick="inlineDelete(${id})">🗑️ 刪除</button>
+    </div>
+  `;
+  panel.classList.add('show');
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function inlineSave(id){
+  const q=DATA.qa.find(x=>x.id===id);if(!q)return;
+  const title=document.getElementById('ie_title_'+id).value.trim();
+  const content=document.getElementById('ie_content_'+id).value.trim();
+  if(!title||!content){showToast('標題與內容不可空白');return}
+  q.category=document.getElementById('ie_cat_'+id).value;
+  q.title=title;q.content=content;
+  q.tags=document.getElementById('ie_tags_'+id).value.split(',').map(s=>s.trim()).filter(Boolean);
+  const urg=document.getElementById('ie_urgent_'+id).checked;
+  const int_=document.getElementById('ie_internal_'+id).checked;
+  if(urg)q.urgent=true;else delete q.urgent;
+  if(int_)q.internal=true;else delete q.internal;
+  saveLocal();renderAll();showToast('已儲存（記得匯出 data.json）');
+}
+function inlineCancel(id){const p=document.getElementById('editPanel'+id);if(p){p.classList.remove('show');p.innerHTML=''}}
+function inlineDelete(id){const q=DATA.qa.find(x=>x.id===id);if(!q)return;if(!confirm(`確定要刪除「${q.title}」？`))return;DATA.qa=DATA.qa.filter(x=>x.id!==id);saveLocal();renderAll();showToast('已刪除')}
+
+// Editor helpers
+function wrapSel(taId,color){
+  const ta=document.getElementById(taId);if(!ta)return;
+  const s=ta.selectionStart,e=ta.selectionEnd;
+  if(s===e){showToast('請先選取要套用的文字');return}
+  const sel=ta.value.slice(s,e);
+  ta.value=ta.value.slice(0,s)+`[[${color}:${sel}]]`+ta.value.slice(e);
+  ta.focus();
+}
+function doInsertImg(taId){
+  let fileInput=document.getElementById(taId.replace('ie_content_','ie_imgfile_'));
+  if(!fileInput){fileInput=document.getElementById('nq_imgfile')}
+  if(fileInput)fileInput.click();
+}
+function doImgFile(input,taId){
+  const f=input.files[0];if(!f)return;
+  showToast('圖片處理中...');
+  const img=new Image();
+  const reader=new FileReader();
+  reader.onload=e=>{
+    img.onload=()=>{
+      let w=img.width,h=img.height;const maxDim=800;
+      if(w>maxDim||h>maxDim){if(w>h){h=Math.round(h*maxDim/w);w=maxDim}else{w=Math.round(w*maxDim/h);h=maxDim}}
+      const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      const result=canvas.toDataURL('image/jpeg',0.7);
+      const ta=document.getElementById(taId);const pos=ta.selectionStart||ta.value.length;
+      ta.value=ta.value.slice(0,pos)+'\n[[img:'+result+']]\n'+ta.value.slice(pos);
+      showToast('圖片已插入（'+Math.round(result.length/1370)+'KB）');
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(f);input.value='';
+}
+function doInsertVideo(taId){
+  const url=prompt('請貼上影片網址（YouTube / Vimeo / mp4）：');if(!url)return;
+  const ta=document.getElementById(taId);const pos=ta.selectionStart||ta.value.length;
+  ta.value=ta.value.slice(0,pos)+'\n[[video:'+url.trim()+']]\n'+ta.value.slice(pos);showToast('影片已插入');
+}
+function doInsertLink(taId){
+  const text=prompt('連結顯示文字：');if(!text)return;
+  const url=prompt('網址：');if(!url)return;
+  const ta=document.getElementById(taId);const pos=ta.selectionStart||ta.value.length;
+  ta.value=ta.value.slice(0,pos)+`[[link:${text}|${url}]]`+ta.value.slice(pos);showToast('連結已插入');
+}
+
+// Search
+function onSearch(){const v=document.getElementById('searchInput').value;document.getElementById('searchClear').classList.toggle('show',v.length>0);renderQA()}
+function clearSearch(){document.getElementById('searchInput').value='';document.getElementById('searchClear').classList.remove('show');renderQA()}
+
+// Format
+function esc(s){return s==null?'':String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function fmt(c){
+  if(!c)return'';let s=esc(c);
+  s=s.replace(/\[\[red:(.*?)\]\]/g,'<span class="ct-red">$1</span>');
+  s=s.replace(/\[\[orange:(.*?)\]\]/g,'<span class="ct-orange">$1</span>');
+  s=s.replace(/\[\[green:(.*?)\]\]/g,'<span class="ct-green">$1</span>');
+  s=s.replace(/\[\[blue:(.*?)\]\]/g,'<span class="ct-blue">$1</span>');
+  s=s.replace(/\[\[purple:(.*?)\]\]/g,'<span class="ct-purple">$1</span>');
+  s=s.replace(/\[\[link:(.*?)\|(.*?)\]\]/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+  s=s.replace(/\[\[img:(.*?)\]\]/g,'<img src="$1" alt="圖片">');
+  s=s.replace(/\[\[video:(.*?)\]\]/g,(m,u)=>{u=u.trim();const yt=u.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/);if(yt)return`<div class="video-wrap"><iframe src="https://www.youtube.com/embed/${yt[1]}" allowfullscreen></iframe></div>`;const vm=u.match(/vimeo\.com\/(\d+)/);if(vm)return`<div class="video-wrap"><iframe src="https://player.vimeo.com/video/${vm[1]}" allowfullscreen></iframe></div>`;if(/\.(mp4|webm|ogg)(\?|$)/i.test(u))return`<div class="video-wrap"><video controls src="${u}"></video></div>`;return`<a href="${u}" target="_blank">🎥 ${u}</a>`});
+  s=s.replace(/(^|[^"'>=\/])(https?:\/\/[^\s<]+)/g,'$1<a href="$2" target="_blank" rel="noopener">$2</a>');
+  return s;
+}
+function hl(t,kw){if(!kw)return esc(t);const s=esc(t),k=esc(kw);return s.replace(new RegExp('('+k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark style="background:#FFE58F;padding:0 2px;border-radius:2px">$1</mark>')}
+
+function toggleFontSize(){const b=document.body;if(b.classList.contains('fs-large')){b.classList.remove('fs-large');b.classList.add('fs-xlarge');showToast('字體：特大')}else if(b.classList.contains('fs-xlarge')){b.classList.remove('fs-xlarge');showToast('字體：一般')}else{b.classList.add('fs-large');showToast('字體：大')}}
+function scrollToTop(){scrollTo({top:0,behavior:'smooth'})}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+
+// ========= Admin =========
+function openAdmin(){document.getElementById('adminModal').classList.add('show');if(!isAdmin)showLogin();else showPanel()}
+function closeAdmin(){document.getElementById('adminModal').classList.remove('show')}
+
+function showLogin(){
+  document.getElementById('adminTitle').textContent='🔒 管理後台';
+  document.getElementById('adminBody').innerHTML=`<div class="login-form"><div style="font-size:3rem;margin-bottom:10px">🔐</div><p style="color:var(--text-light);margin-bottom:16px">請輸入管理密碼</p><input type="password" id="adminPwd" placeholder="密碼" onkeydown="if(event.key==='Enter')doLogin()"><div style="margin-top:10px"><button class="btn-primary" onclick="doLogin()">登入</button></div></div>`;
+  setTimeout(()=>document.getElementById('adminPwd')?.focus(),100);
+}
+function doLogin(){
+  const p=document.getElementById('adminPwd').value;
+  if(p===ADMIN_PASSWORD){isAdmin=true;document.body.classList.add('admin-mode');showPanel();renderAll();showToast('登入成功，QA 卡片右上角出現 ✏️ 編輯按鈕')}
+  else{showToast('密碼錯誤');document.getElementById('adminPwd').value='';document.getElementById('adminPwd').focus()}
+}
+
+function showPanel(){
+  document.getElementById('adminTitle').textContent='⚙️ 管理後台';
+  document.getElementById('adminBody').innerHTML=`
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="showAdminTab('category',this)">📂 分類管理</button>
+      <button class="admin-tab" onclick="showAdminTab('newqa',this)">➕ 新增 QA</button>
+      <button class="admin-tab" onclick="showAdminTab('meta',this)">⚙️ 基本設定</button>
+      <button class="admin-tab" onclick="showAdminTab('export',this)">💾 匯出/匯入</button>
+    </div>
+    <div id="adminTabContent"></div>`;
+  showAdminTab('category',document.querySelector('.admin-tab'));
+}
+
+function showAdminTab(tab,btn){
+  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const ct=document.getElementById('adminTabContent');
+  if(tab==='category')ct.innerHTML=renderCatAdmin();
+  else if(tab==='newqa')ct.innerHTML=renderNewQA();
+  else if(tab==='meta')ct.innerHTML=renderMetaAdmin();
+  else if(tab==='export')ct.innerHTML=renderExportAdmin();
+  if(tab==='category')setTimeout(renderCatList,0);
+}
+
+// ---- 分類管理 ----
+function renderCatAdmin(){
+  setTimeout(renderCatList,0);
+  return`<div class="admin-toolbar"><button class="btn-primary" onclick="editCat(null)">➕ 新增分類</button></div><div class="admin-list" id="catList"></div>`;
+}
+function renderCatList(){
+  document.getElementById('catList').innerHTML=DATA.categories.map((c,i)=>`<div class="admin-item"><div class="admin-item-info"><div class="admin-item-title">${c.icon} ${esc(c.name)}</div><div class="admin-item-meta">ID: ${c.id} ｜ ${DATA.qa.filter(q=>q.category===c.id).length} 則 QA</div></div><button class="admin-btn admin-btn-edit" onclick="moveCat(${i},-1)" title="上移">⬆</button><button class="admin-btn admin-btn-edit" onclick="moveCat(${i},1)" title="下移">⬇</button><button class="admin-btn admin-btn-edit" onclick="editCat('${c.id}')">編輯</button><button class="admin-btn admin-btn-del" onclick="delCat('${c.id}')">刪除</button></div>`).join('')||'<div style="padding:20px;text-align:center;color:var(--text-light)">沒有分類</div>';
+}
+function moveCat(i,dir){const j=i+dir;if(j<0||j>=DATA.categories.length)return;[DATA.categories[i],DATA.categories[j]]=[DATA.categories[j],DATA.categories[i]];saveLocal();renderCatList();renderAll()}
+function editCat(id){
+  const c=id?DATA.categories.find(x=>x.id===id):{id:'',name:'',icon:'📋'};
+  const iconGrid=ICONS.map(ic=>`<span class="tool-btn" style="font-size:1.2rem;padding:6px;cursor:pointer" onclick="document.getElementById('ec_icon').value='${ic}'">${ic}</span>`).join('');
+  document.getElementById('adminTabContent').innerHTML=`
+    <button class="btn-secondary" onclick="showAdminTab('category',document.querySelector('.admin-tab.active'))">← 返回</button>
+    <h3 style="margin:16px 0">${id?'✏️ 編輯分類':'➕ 新增分類'}</h3>
+    <div class="form-group"><label>分類 ID（英文，新增後不可修改）</label><input type="text" id="ec_id" value="${esc(c.id)}" ${id?'disabled':''}></div>
+    <div class="form-group"><label>顯示名稱</label><input type="text" id="ec_name" value="${esc(c.name)}"></div>
+    <div class="form-group"><label>圖示</label><input type="text" id="ec_icon" value="${c.icon}" style="width:60px;font-size:1.5rem;text-align:center"><div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:2px">${iconGrid}</div></div>
+    <div style="margin-top:20px"><button class="btn-secondary" onclick="showAdminTab('category',document.querySelector('.admin-tab.active'))">取消</button><button class="btn-primary" onclick="saveCat('${id||''}')">💾 儲存</button></div>`;
+}
+function saveCat(origId){
+  const id=document.getElementById('ec_id').value.trim();const name=document.getElementById('ec_name').value.trim();const icon=document.getElementById('ec_icon').value.trim()||'📋';
+  if(!id||!name){showToast('ID 和名稱不可空白');return}
+  if(origId){const c=DATA.categories.find(x=>x.id===origId);if(c){c.name=name;c.icon=icon}}
+  else{if(DATA.categories.find(x=>x.id===id)){showToast('ID 已存在');return}DATA.categories.push({id,name,icon})}
+  saveLocal();showToast('已儲存');showAdminTab('category',document.querySelector('.admin-tab.active'));renderAll();
+}
+function delCat(id){const c=DATA.categories.find(x=>x.id===id);if(!c)return;const n=DATA.qa.filter(q=>q.category===id).length;if(n>0){alert(`還有 ${n} 則 QA，請先移到其他分類`);return}if(!confirm(`刪除「${c.name}」？`))return;DATA.categories=DATA.categories.filter(x=>x.id!==id);saveLocal();showToast('已刪除');renderCatList();renderAll()}
+
+// ---- 新增 QA ----
+function renderNewQA(){
+  const catOptions=DATA.categories.map(c=>`<option value="${c.id}">${c.icon} ${esc(c.name)}</option>`).join('');
+  return`
+    <h3 style="margin-bottom:16px">➕ 新增 QA</h3>
+    <div class="form-group"><label>分類</label><select id="nq_cat">${catOptions}</select></div>
+    <div class="form-group"><label>標題</label><input type="text" id="nq_title" placeholder="輸入標題"></div>
+    <div class="form-group"><label>內容</label>
+    <div class="edit-toolbar">
+      <button type="button" class="tool-btn" onclick="wrapSel('nq_content','red')">🔴 紅</button>
+      <button type="button" class="tool-btn" onclick="wrapSel('nq_content','orange')">🟠 橘</button>
+      <button type="button" class="tool-btn" onclick="wrapSel('nq_content','green')">🟢 綠</button>
+      <button type="button" class="tool-btn" onclick="wrapSel('nq_content','blue')">🔵 藍</button>
+      <button type="button" class="tool-btn" onclick="wrapSel('nq_content','purple')">🟣 紫</button>
+      <div class="tool-sep"></div>
+      <button type="button" class="tool-btn" onclick="doInsertImg('nq_content')">📷 圖片</button>
+      <button type="button" class="tool-btn" onclick="doInsertVideo('nq_content')">🎥 影片</button>
+      <button type="button" class="tool-btn" onclick="doInsertLink('nq_content')">🔗 連結</button>
+      <input type="file" id="nq_imgfile" accept="image/*" style="display:none" onchange="doImgFile(this,'nq_content')">
+    </div>
+    <textarea class="edit-textarea" id="nq_content" placeholder="輸入內容... 選取文字後點顏色按鈕套用色彩"></textarea></div>
+    <div class="form-group"><label>標籤（逗號分隔）</label><input type="text" id="nq_tags" placeholder="關鍵字1, 關鍵字2"></div>
+    <div class="edit-check" style="margin-bottom:12px"><label><input type="checkbox" id="nq_urgent"> 🚨 緊急</label><label><input type="checkbox" id="nq_internal"> 🔒 內部</label></div>
+    <button class="btn-primary" onclick="saveNewQA()">💾 儲存新增</button>`;
+}
+function saveNewQA(){
+  const title=document.getElementById('nq_title').value.trim(),content=document.getElementById('nq_content').value.trim();
+  if(!title||!content){showToast('標題與內容不可空白');return}
+  const newId=Math.max(0,...DATA.qa.map(x=>x.id))+1;
+  const q={id:newId,category:document.getElementById('nq_cat').value,title,content,tags:document.getElementById('nq_tags').value.split(',').map(s=>s.trim()).filter(Boolean)};
+  if(document.getElementById('nq_urgent').checked)q.urgent=true;
+  if(document.getElementById('nq_internal').checked)q.internal=true;
+  DATA.qa.push(q);saveLocal();renderAll();showToast('已新增！');
+  document.getElementById('nq_title').value='';document.getElementById('nq_content').value='';document.getElementById('nq_tags').value='';
+}
+
+// ---- 基本設定 ----
+function renderMetaAdmin(){
+  return`<h3 style="margin-bottom:16px">⚙️ 基本設定</h3>
+    <div class="form-group"><label>網站標題</label><input type="text" id="m_title" value="${esc(DATA.meta.title||'')}"></div>
+    <div class="form-group"><label>客服電話</label><input type="text" id="m_sub" value="${esc(DATA.meta.subtitle||'')}"></div>
+    <div class="form-group"><label>客服信箱</label><input type="text" id="m_email" value="${esc(DATA.meta.email||'')}"></div>
+    <div class="form-group"><label>LINE ID</label><input type="text" id="m_line" value="${esc(DATA.meta.lineId||'')}"></div>
+    <div class="form-group"><label>跑馬燈</label><textarea id="m_marquee" rows="3">${esc(DATA.marquee||'')}</textarea></div>
+    <div class="form-group"><label>版本</label><input type="text" id="m_ver" value="${esc(DATA.meta.version||'')}"></div>
+    <div style="margin-top:20px"><button class="btn-primary" onclick="saveMeta()">💾 儲存</button></div>`;
+}
+function saveMeta(){
+  DATA.meta.title=document.getElementById('m_title').value.trim();
+  DATA.meta.subtitle=document.getElementById('m_sub').value.trim();
+  DATA.meta.email=document.getElementById('m_email').value.trim();
+  DATA.meta.lineId=document.getElementById('m_line').value.trim();
+  DATA.meta.version=document.getElementById('m_ver').value.trim();
+  DATA.marquee=document.getElementById('m_marquee').value.trim();
+  saveLocal();showToast('已儲存');renderAll();
+}
+
+// ---- 匯入/匯出 ----
+function renderExportAdmin(){
+  return`
+    <div class="export-section"><h3>💾 匯出 data.json</h3><p>下載後上傳到 GitHub 覆蓋原檔，其他人就能看到最新內容</p><button class="btn-primary" onclick="exportData()">⬇️ 下載 data.json</button></div>
+    <div class="export-section" style="background:#E3F2FD;border-color:#90CAF9"><h3 style="color:#1565C0">📤 匯入 data.json</h3><p>會覆蓋目前所有資料</p><button class="btn-primary" style="background:#1565C0" onclick="document.getElementById('impFile').click()">⬆️ 選擇檔案</button><input type="file" id="impFile" accept=".json" style="display:none" onchange="importData(this)"></div>
+    <div class="export-section" style="background:#FFF3E0;border-color:#FFB74D"><h3 style="color:#E65100">🔄 從伺服器重新載入</h3><p>捨棄本機暫存修改</p><button class="btn-primary" style="background:#E65100" onclick="reloadServer()">重新載入</button></div>
+    <div class="export-section" style="background:#FFEBEE;border-color:#EF9A9A"><h3 style="color:#C62828">🗑️ 清除暫存</h3><p>清除瀏覽器暫存並登出</p><button class="btn-primary" style="background:#C62828" onclick="clearAll()">清除</button></div>
+    <div style="margin-top:20px;padding:16px;background:var(--brand-bg);border-radius:8px;font-size:.9rem;color:var(--text-light)"><strong style="color:var(--brand)">📖 部署流程</strong><br>1. 前台直接點 ✏️ 編輯 QA / 後台管理分類<br>2. 到此分頁下載 data.json（每次下載版本號自動 +1）<br>3. 上傳 GitHub 覆蓋原檔<br>4. 其他人打開網頁會自動偵測到新版本，一鍵更新<br><br><strong style="color:var(--brand)">📊 統計</strong><br>QA：${DATA.qa.length} 則 ｜ 分類：${DATA.categories.length} 類<br>版本號：<strong>v${DATA.meta.buildNum||0}</strong> ｜ 更新日期：${DATA.meta.lastUpdate||'—'}</div>`;
+}
+function exportData(){DATA.meta.lastUpdate=new Date().toISOString().split('T')[0];DATA.meta.buildNum=(DATA.meta.buildNum||0)+1;saveLocal();const j=JSON.stringify(DATA,null,2);const b=new Blob([j],{type:'application/json;charset=utf-8'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='data.json';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u);showToast('已下載 data.json（v'+DATA.meta.buildNum+'）');showAdminTab('export',document.querySelector('.admin-tab.active'))}
+function importData(inp){const f=inp.files[0];if(!f)return;if(!confirm('匯入會覆蓋所有資料，確定？')){inp.value='';return}const r=new FileReader();r.onload=e=>{try{const p=JSON.parse(e.target.result);if(!p.qa||!p.categories){showToast('格式不正確');return}DATA=p;saveLocal();showToast('匯入成功');renderAll();showAdminTab('export',document.querySelector('.admin-tab.active'))}catch(er){showToast('解析失敗')}};r.readAsText(f);inp.value=''}
+async function reloadServer(){if(!confirm('捨棄暫存，確定？'))return;localStorage.removeItem('glico_qa_data');try{DATA=await loadJson();showToast('已重新載入');renderAll();showAdminTab('export',document.querySelector('.admin-tab.active'))}catch(e){showToast('失敗')}}
+function clearAll(){if(!confirm('清除暫存並登出？'))return;localStorage.removeItem('glico_qa_data');isAdmin=false;document.body.classList.remove('admin-mode');closeAdmin();showToast('已清除');location.reload()}
+
+function saveLocal(){DATA.meta.lastUpdate=new Date().toISOString().split('T')[0];try{localStorage.setItem('glico_qa_data',JSON.stringify(DATA))}catch(e){console.warn('儲存失敗',e)}}
+
+document.getElementById('adminModal').addEventListener('click',e=>{if(e.target.id==='adminModal')closeAdmin()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAdmin()});
+</script>
+</body>
+</html>
