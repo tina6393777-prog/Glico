@@ -406,15 +406,16 @@ function doInsertImg(taId){
 function doImgFile(input,taId){
   const f=input.files[0];if(!f)return;
   showToast('圖片處理中...');
+  const isPng=f.type==='image/png';
   const img=new Image();
   const reader=new FileReader();
   reader.onload=e=>{
     img.onload=()=>{
-      let w=img.width,h=img.height;const maxDim=800;
+      let w=img.width,h=img.height;const maxDim=1600;
       if(w>maxDim||h>maxDim){if(w>h){h=Math.round(h*maxDim/w);w=maxDim}else{w=Math.round(w*maxDim/h);h=maxDim}}
       const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
       canvas.getContext('2d').drawImage(img,0,0,w,h);
-      const result=canvas.toDataURL('image/jpeg',0.7);
+      const result=isPng?canvas.toDataURL('image/png'):canvas.toDataURL('image/jpeg',0.92);
       const ta=document.getElementById(taId);const pos=ta.selectionStart||ta.value.length;
       ta.value=ta.value.slice(0,pos)+'\n[[img:'+result+']]\n'+ta.value.slice(pos);
       showToast('圖片已插入（'+Math.round(result.length/1370)+'KB）');
