@@ -76,7 +76,7 @@
       "id": 5,
       "category": "website",
       "title": "首頁",
-      "content": "[[link:格力高官網|https://www.glicoshop.com/]]\n[[img:images/img_001.jpg]]",
+      "content": "[[link:格力高官網|https://www.glicoshop.com/]]\n[[img:圖片/img_001.jpg]]",
       "tags": [
         "首頁",
         "官網"
@@ -96,7 +96,7 @@
       "id": 7,
       "category": "website",
       "title": "即期俗又大碗🥣",
-      "content": "[[link:即期俗又大碗🥣|https://www.glicoshop.com/collections/%E5%8D%B3%E6%9C%9F%E4%BF%97%E5%8F%88%E5%A4%A7%E7%A2%97%F0%9F%A5%A3]]\n[[img:images/img_002.jpg]]",
+      "content": "[[link:即期俗又大碗🥣|https://www.glicoshop.com/collections/%E5%8D%B3%E6%9C%9F%E4%BF%97%E5%8F%88%E5%A4%A7%E7%A2%97%F0%9F%A5%A3]]\n[[img:圖片/img_002.jpg]]",
       "tags": [
         "即期",
         "特價"
@@ -106,7 +106,7 @@
       "id": 8,
       "category": "website",
       "title": "每週好物推薦區",
-      "content": "[[link:每週好物推薦區|https://www.glicoshop.com/collections/%E6%AF%8F%E9%80%B1%E5%A5%BD%E7%89%A9%E6%8E%A8%E8%96%A6%E5%8D%80]]\n[[img:images/img_003.jpg]]\n[[img:images/img_004.jpg]]",
+      "content": "[[link:每週好物推薦區|https://www.glicoshop.com/collections/%E6%AF%8F%E9%80%B1%E5%A5%BD%E7%89%A9%E6%8E%A8%E8%96%A6%E5%8D%80]]\n[[img:圖片/img_003.jpg]]\n[[img:圖片/img_004.jpg]]",
       "tags": [
         "推薦",
         "好物"
@@ -116,7 +116,7 @@
       "id": 9,
       "category": "website",
       "title": "超值優惠組合區",
-      "content": "[[link:超值優惠組合區|https://www.glicoshop.com/collections/%E8%B6%85%E5%80%BC%E5%84%AA%E6%83%A0%E7%B5%84%E5%90%88%E5%8D%80]]\n[[img:images/img_005.jpg]]",
+      "content": "[[link:超值優惠組合區|https://www.glicoshop.com/collections/%E8%B6%85%E5%80%BC%E5%84%AA%E6%83%A0%E7%B5%84%E5%90%88%E5%8D%80]]\n[[img:圖片/img_005.jpg]]",
       "tags": [
         "優惠",
         "組合"
@@ -126,7 +126,7 @@
       "id": 10,
       "category": "website",
       "title": "認識格力高",
-      "content": "[[link:認識格力高|https://www.glicoshop.com/pages/%E9%97%9C%E6%96%BC%E6%88%91%E5%80%91%E5%93%81%E7%89%8C%E4%BB%8B%E7%B4%B9]]\n[[img:images/img_006.jpg]]\n\n[[img:images/img_007.jpg]]\n\n[[img:images/img_008.jpg]]\n\n[[img:images/img_009.jpg]]\n\n[[img:images/img_010.jpg]]",
+      "content": "[[link:認識格力高|https://www.glicoshop.com/pages/%E9%97%9C%E6%96%BC%E6%88%91%E5%80%91%E5%93%81%E7%89%8C%E4%BB%8B%E7%B4%B9]]\n[[img:圖片/img_006.jpg]]\n\n[[img:圖片/img_007.jpg]]\n\n[[img:圖片/img_008.jpg]]\n\n[[img:圖片/img_009.jpg]]\n\n[[img:圖片/img_010.jpg]]",
       "tags": [
         "品牌",
         "介紹"
@@ -148,7 +148,7 @@
       "id": 17,
       "category": "complaint",
       "title": "客訴處理流程",
-      "content": "如遇客訴案件，請依案件類型來填寫表單。\n◆全部的客訴案件\n→需要填寫「格力高x程高-客訴反應表單」\n◆如果是活動抽獎(與RIKA有關)的客訴案件\n→需填寫「格力高x程高-客訴反應表單」與「格力高x程高XRIKA-客訴反應表單」\n\n[[img:客戶來電客訴流程圖.jpg]]\n[[img:images/img_011.jpg]]",
+      "content": "如遇客訴案件，請依案件類型來填寫表單。\n◆全部的客訴案件\n→需要填寫「格力高x程高-客訴反應表單」\n◆如果是活動抽獎(與RIKA有關)的客訴案件\n→需填寫「格力高x程高-客訴反應表單」與「格力高x程高XRIKA-客訴反應表單」\n\n[[img:客戶來電客訴流程圖.jpg]]\n[[img:圖片/img_011.jpg]]",
       "tags": [
         "客訴",
         "流程",
@@ -322,7 +322,7 @@
       "id": 32,
       "category": "other",
       "title": "跑跑人是否有開放授權",
-      "content": "跑跑人形象因總部規定只能用於格力高的企業活動，故[[red:基本上未開放授權]]。\n[[img:images/img_012.png]]",
+      "content": "跑跑人形象因總部規定只能用於格力高的企業活動，故[[red:基本上未開放授權]]。\n[[img:圖片/img_012.png]]",
       "tags": [
         "跑跑人",
         "授權"
@@ -354,7 +354,7 @@
       "id": 35,
       "category": "other",
       "title": "發票格式",
-      "content": "[[img:images/img_013.png]]",
+      "content": "[[img:圖片/img_013.png]]",
       "tags": [
         "發票"
       ]
@@ -1031,7 +1031,7 @@
       "id": 95,
       "category": "system",
       "title": "APP購買流程及付款方式",
-      "content": "[[img:APP購買流程及付款方式.jpg]]\n[[img:images/img_014.jpg]]\n[[img:images/img_015.jpg]]\n\n\n[[img:images/img_016.jpg]]\n\n[[img:images/img_017.jpg]]",
+      "content": "[[img:APP購買流程及付款方式.jpg]]\n[[img:圖片/img_014.jpg]]\n[[img:圖片/img_015.jpg]]\n\n\n[[img:圖片/img_016.jpg]]\n\n[[img:圖片/img_017.jpg]]",
       "tags": [
         "APP",
         "購買",
@@ -1042,7 +1042,7 @@
       "id": 96,
       "category": "system",
       "title": "官網購買流程及付款方式",
-      "content": "[[img:官網購買流程及付款方式.jpg]]\n[[img:images/img_018.jpg]]\n\n[[img:images/img_019.jpg]]\n\n[[img:images/img_020.jpg]]\n\n[[img:images/img_021.jpg]]\n\n[[img:images/img_022.jpg]]",
+      "content": "[[img:官網購買流程及付款方式.jpg]]\n[[img:圖片/img_018.jpg]]\n\n[[img:圖片/img_019.jpg]]\n\n[[img:圖片/img_020.jpg]]\n\n[[img:圖片/img_021.jpg]]\n\n[[img:圖片/img_022.jpg]]",
       "tags": [
         "官網",
         "購買",
